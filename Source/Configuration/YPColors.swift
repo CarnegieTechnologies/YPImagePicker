@@ -12,6 +12,9 @@ public struct YPColors {
     
     // MARK: - Common
     
+    /// The common bar tint color which is used for navigator bar color
+    public var barTintColor = UIColor.ypSystemBlue
+    
     /// The common tint color which is used for done buttons in navigation bar, multiple items selection and so on.
     public var tintColor = UIColor.ypSystemBlue
     
