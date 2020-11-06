@@ -105,7 +105,7 @@ class YPCropVC: UIViewController {
         cancelButton.setFont(font: YPConfig.fonts.leftBarButtonFont, forState: .normal)
         
         let saveButton = UIBarButtonItem(title: YPConfig.wordings.save,
-                                         style: .plain,
+                                         style: .done,
                                          target: self,
                                          action: #selector(done))
         saveButton.setFont(font: YPConfig.fonts.rightBarButtonFont, forState: .normal)
