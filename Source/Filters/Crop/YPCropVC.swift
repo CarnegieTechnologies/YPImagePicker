@@ -13,18 +13,10 @@ public enum YPCropType {
     case rectangle(ratios: [Ratio])
 }
 
-public enum Ratio {
-    case oneToOne
-    case fourToThree
-    case sixteenToNine
-
-    var name: String {
-        switch self {
-        case .oneToOne: return "1:1"
-        case .fourToThree: return "4:3"
-        case .sixteenToNine: return "16:9"
-        }
-    }
+public enum Ratio: String {
+    case oneToOne = "1:1"
+    case fourToThree = "4:3"
+    case sixteenToNine = "16:9"
 
     var value: Double {
         switch self {
@@ -41,7 +33,7 @@ public class RatioButtonItem: UIBarButtonItem {
 
     init(ratio: Ratio, target: AnyObject, action: Selector) {
         super.init()
-        self.title = ratio.name
+        self.title = ratio.rawValue
         self.target = target
         self.action = action
         self.tintColor = .ypLabel
