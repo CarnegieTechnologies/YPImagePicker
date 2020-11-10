@@ -16,12 +16,14 @@ public enum YPCropType {
 public enum Ratio: String {
     case oneToOne = "1:1"
     case fourToThree = "4:3"
+    case threeToFour = "3:4"
     case sixteenToNine = "16:9"
 
     var value: Double {
         switch self {
         case .oneToOne: return 1.0
         case .fourToThree: return 4.0 / 3.0
+        case .threeToFour: return 3.0 / 4.0
         case .sixteenToNine: return 16.0 / 9.0
         }
     }
