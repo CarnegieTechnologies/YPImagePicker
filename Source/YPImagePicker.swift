@@ -51,9 +51,12 @@ open class YPImagePicker: UINavigationController {
         YPImagePickerConfiguration.shared = configuration
         picker = YPPickerVC()
         super.init(nibName: nil, bundle: nil)
-        modalPresentationStyle = .fullScreen // Force .fullScreen as iOS 13 now shows modals as cards by default.
+        modalPresentationStyle = .overCurrentContext
         picker.imagePickerDelegate = self
-        navigationBar.tintColor = .ypLabel
+        navigationBar.tintColor = configuration.colors.tintColor
+        navigationBar.barTintColor = configuration.colors.barTintColor
+        navigationBar.titleTextAttributes = [.foregroundColor: YPConfig.colors.tintColor]
+        navigationBar.barStyle = YPConfig.preferredStatusBarStyle == .lightContent ? .black : .default
     }
     
     public required init?(coder aDecoder: NSCoder) {
@@ -68,6 +71,7 @@ override open func viewDidLoad() {
         viewControllers = [picker]
         setupLoadingView()
         navigationBar.isTranslucent = false
+        setNeedsStatusBarAppearanceUpdate()
 
         picker.didSelectItems = { [weak self] items in
             // Use Fade transition instead of default push animation
@@ -108,8 +112,8 @@ override open func viewDidLoad() {
                 }
                 
                 func showCropVC(photo: YPMediaPhoto, completion: @escaping (_ aphoto: YPMediaPhoto) -> Void) {
-                    if case let YPCropType.rectangle(ratio) = YPConfig.showsCrop {
-                        let cropVC = YPCropVC(image: photo.image, ratio: ratio)
+                    if case let YPCropType.rectangle(ratios) = YPConfig.showsCrop {
+                        let cropVC = YPCropVC(image: photo.image, ratios: ratios)
                         cropVC.didFinishCropping = { croppedImage in
                             photo.modifiedImage = croppedImage
                             completion(photo)

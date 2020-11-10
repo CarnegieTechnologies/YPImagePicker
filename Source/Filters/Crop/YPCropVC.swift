@@ -10,11 +10,45 @@ import UIKit
 
 public enum YPCropType {
     case none
-    case rectangle(ratio: Double)
+    case rectangle(ratios: [Ratio])
+}
+
+public enum Ratio: String {
+    case oneToOne = "1:1"
+    case fourToThree = "4:3"
+    case threeToFour = "3:4"
+    case sixteenToNine = "16:9"
+
+    var value: Double {
+        switch self {
+        case .oneToOne: return 1.0
+        case .fourToThree: return 4.0 / 3.0
+        case .threeToFour: return 3.0 / 4.0
+        case .sixteenToNine: return 16.0 / 9.0
+        }
+    }
+}
+
+public class RatioButtonItem: UIBarButtonItem {
+
+    var ratio: Ratio!
+
+    init(ratio: Ratio, target: AnyObject, action: Selector) {
+        super.init()
+        self.title = ratio.rawValue
+        self.target = target
+        self.action = action
+        self.tintColor = .ypLabel
+        self.ratio = ratio
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
 }
 
 class YPCropVC: UIViewController {
-    
+
     public var didFinishCropping: ((UIImage) -> Void)?
     
     override var prefersStatusBarHidden: Bool { return YPConfig.hidesStatusBar }
@@ -22,13 +56,27 @@ class YPCropVC: UIViewController {
     private let originalImage: UIImage
     private let pinchGR = UIPinchGestureRecognizer()
     private let panGR = UIPanGestureRecognizer()
+
+    private var v: YPCropView
+    private var ratios: [Ratio]
+
+    private var currentRatio: Ratio {
+        didSet {
+            guard oldValue != currentRatio else { return }
+            v = YPCropView(image: originalImage, ratio: currentRatio.value)
+            view = v
+            setupToolbar()
+            setupGestureRecognizers()
+        }
+    }
     
-    private let v: YPCropView
     override func loadView() { view = v }
     
-    required init(image: UIImage, ratio: Double) {
-        v = YPCropView(image: image, ratio: ratio)
-        originalImage = image
+    required init(image: UIImage, ratios: [Ratio]) {
+        self.originalImage = image
+        self.ratios = ratios
+        self.currentRatio = ratios.first ?? Ratio.oneToOne
+        v = YPCropView(image: image, ratio: currentRatio.value)
         super.init(nibName: nil, bundle: nil)
         self.title = YPConfig.wordings.crop
     }
@@ -48,18 +96,24 @@ class YPCropVC: UIViewController {
                                            style: .plain,
                                            target: self,
                                            action: #selector(cancel))
+        cancelButton.setFont(font: YPConfig.fonts.leftBarButtonFont, forState: .normal)
         cancelButton.tintColor = .ypLabel
+        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        var toolbarItems = [cancelButton, flexibleSpace]
+        for ratio in ratios {
+            let ratioItem = RatioButtonItem(ratio: ratio, target: self, action: #selector(setRatio(ratioButtonItem:)))
+            toolbarItems.append(contentsOf: [ratioItem, flexibleSpace])
+        }
         cancelButton.setFont(font: YPConfig.fonts.leftBarButtonFont, forState: .normal)
         
-        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-        
         let saveButton = UIBarButtonItem(title: YPConfig.wordings.save,
-                                           style: .plain,
-                                           target: self,
-                                           action: #selector(done))
+                                         style: .done,
+                                         target: self,
+                                         action: #selector(done))
         saveButton.setFont(font: YPConfig.fonts.rightBarButtonFont, forState: .normal)
         saveButton.tintColor = .ypLabel
-        v.toolbar.items = [cancelButton, flexibleSpace, saveButton]
+        toolbarItems.append(saveButton)
+        v.toolbar.items = toolbarItems
     }
     
     func setupGestureRecognizers() {
@@ -79,6 +133,11 @@ class YPCropVC: UIViewController {
         navigationController?.popViewController(animated: true)
     }
     
+    @objc
+    func setRatio(ratioButtonItem: RatioButtonItem) {
+        currentRatio = ratioButtonItem.ratio
+    }
+
     @objc
     func done() {
         guard let image = v.imageView.image else {

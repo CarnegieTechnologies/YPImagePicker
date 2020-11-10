@@ -197,7 +197,9 @@ open class YPPickerVC: YPBottomPager, YPBottomPagerDelegate {
     func navBarTapped() {
         let vc = YPAlbumVC(albumsManager: albumsManager)
         let navVC = UINavigationController(rootViewController: vc)
-        navVC.navigationBar.tintColor = .ypLabel
+        navVC.navigationBar.tintColor = YPConfig.colors.tintColor
+        navVC.navigationBar.barTintColor = YPConfig.colors.barTintColor
+        navVC.navigationBar.titleTextAttributes = [.foregroundColor: YPConfig.colors.tintColor]
         
         vc.didSelectAlbum = { [weak self] album in
             self?.libraryVC?.setAlbum(album)
@@ -217,7 +219,7 @@ open class YPPickerVC: YPBottomPager, YPBottomPagerDelegate {
         label.font = YPConfig.fonts.pickerTitleFont
 
         // Use custom textColor if set by user.
-        if let navBarTitleColor = UINavigationBar.appearance().titleTextAttributes?[.foregroundColor] as? UIColor {
+        if let navBarTitleColor = navigationController?.navigationBar.titleTextAttributes?[.foregroundColor] as? UIColor {
             label.textColor = navBarTitleColor
         }
         
@@ -233,7 +235,7 @@ open class YPPickerVC: YPBottomPager, YPBottomPagerDelegate {
             arrow.image = arrow.image?.withRenderingMode(.alwaysTemplate)
             arrow.tintColor = .ypLabel
             
-            let attributes = UINavigationBar.appearance().titleTextAttributes
+            let attributes = navigationController?.navigationBar.titleTextAttributes
             if let attributes = attributes, let foregroundColor = attributes[.foregroundColor] as? UIColor {
                 arrow.image = arrow.image?.withRenderingMode(.alwaysTemplate)
                 arrow.tintColor = foregroundColor
