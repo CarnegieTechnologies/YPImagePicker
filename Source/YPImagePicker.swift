@@ -56,7 +56,6 @@ open class YPImagePicker: UINavigationController {
         navigationBar.tintColor = configuration.colors.tintColor
         navigationBar.barTintColor = configuration.colors.barTintColor
         navigationBar.titleTextAttributes = [.foregroundColor: YPConfig.colors.tintColor]
-        navigationBar.barStyle = configuration.preferredStatusBarStyle == .lightContent ? .black : .default
     }
     
     public required init?(coder aDecoder: NSCoder) {
@@ -71,6 +70,7 @@ override open func viewDidLoad() {
         viewControllers = [picker]
         setupLoadingView()
         navigationBar.isTranslucent = false
+        navigationBar.barStyle = YPConfig.preferredStatusBarStyle == .lightContent ? .black : .default
 
         picker.didSelectItems = { [weak self] items in
             // Use Fade transition instead of default push animation
