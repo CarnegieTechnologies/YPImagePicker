@@ -11,7 +11,7 @@ import Stevia
 
 class YPCropView: UIView {
     
-    let imageView = UIImageView()
+    var imageView = UIImageView()
     let topCurtain = UIView()
     let cropArea = UIView()
     let bottomCurtain = UIView()

@@ -89,6 +89,7 @@ class YPCropVC: UIViewController {
         super.viewDidLoad()
         setupToolbar()
         setupGestureRecognizers()
+        setUpNavigationBar()
     }
     
     func setupToolbar() {
@@ -128,6 +129,12 @@ class YPCropVC: UIViewController {
         v.imageView.addGestureRecognizer(panGR)
     }
     
+    private func setUpNavigationBar() {
+        let rotateButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.refresh,
+                                           target: self, action: #selector(rotate))
+        navigationItem.rightBarButtonItem = rotateButton
+    }
+    
     @objc
     func cancel() {
         navigationController?.popViewController(animated: true)
@@ -159,6 +166,12 @@ class YPCropVC: UIViewController {
             didFinishCropping?(croppedImage)
         }
     }
+    
+    @objc
+    func rotate() {
+        v.imageView.transform = v.imageView.transform.rotated(by: .pi / 2)
+    }
+    
 }
 
 extension YPCropVC: UIGestureRecognizerDelegate {
@@ -170,11 +183,8 @@ extension YPCropVC: UIGestureRecognizerDelegate {
         // TODO: Zoom where the fingers are (more user friendly)
         switch sender.state {
         case .began, .changed:
-            var transform = v.imageView.transform
             // Apply zoom level.
-            transform = transform.scaledBy(x: sender.scale,
-                                            y: sender.scale)
-            v.imageView.transform = transform
+            v.imageView.transform = v.imageView.transform.scaledBy(x: sender.scale, y: sender.scale)
         case .ended:
             pinchGestureEnded()
         case .cancelled, .failed, .possible:
@@ -193,15 +203,20 @@ extension YPCropVC: UIGestureRecognizerDelegate {
         var wentOutOfAllowedBounds = false
         
         // Prevent zooming out too much
-        if transform.a < kMinZoomLevel {
+        if transform.a.magnitude < kMinZoomLevel && transform.b.magnitude < kMinZoomLevel &&
+            transform.c.magnitude < kMinZoomLevel && transform.d.magnitude < kMinZoomLevel {
             transform = .identity
             wentOutOfAllowedBounds = true
         }
         
         // Prevent zooming in too much
-        if transform.a > kMaxZoomLevel {
-            transform.a = kMaxZoomLevel
-            transform.d = kMaxZoomLevel
+        if transform.a.magnitude > kMaxZoomLevel && transform.d.magnitude > kMaxZoomLevel {
+            transform.a = transform.a > 0 ? kMaxZoomLevel : -kMaxZoomLevel
+            transform.d = transform.d > 0 ? kMaxZoomLevel : -kMaxZoomLevel
+            wentOutOfAllowedBounds = true
+        } else if transform.b.magnitude > kMaxZoomLevel && transform.c.magnitude > kMaxZoomLevel {
+            transform.b = transform.b > 0 ? kMaxZoomLevel : -kMaxZoomLevel
+            transform.c = transform.c > 0 ? kMaxZoomLevel : -kMaxZoomLevel
             wentOutOfAllowedBounds = true
         }
         
