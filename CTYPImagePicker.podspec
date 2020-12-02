@@ -1,16 +1,16 @@
 Pod::Spec.new do |s|
-  s.name             = 'YPImagePicker'
-  s.version          = "4.5.0"
+  s.name             = 'CTYPImagePicker'
+  s.version          = "4.5.1"
   s.summary          = "Instagram-like image picker & filters for iOS"
-  s.homepage         = "https://github.com/Yummypets/YPImagePicker"
+  s.homepage         = "https://github.com/CarnegieTechnologies/YPImagePicker"
   s.license          = { :type => "MIT", :file => "LICENSE" }
-  s.author           = 'S4cha, NikKovIos'
+  s.author           = 'Marko Mladenovic'
   s.platform         = :ios
-  s.source           = { :git => "https://github.com/Yummypets/YPImagePicker.git",
+  s.source           = { :git => "https://github.com/CarnegieTechnologies/YPImagePicker.git",
                          :tag => s.version.to_s }
   s.social_media_url = 'https://twitter.com/sachadso'
   s.requires_arc     = true
-  s.ios.deployment_target = "8.0"
+  s.ios.deployment_target = "10.3"
   s.source_files = 'Source/**/*.swift'
   s.dependency 'SteviaLayout', '~> 4.7.3'
   s.dependency 'PryntTrimmerView', '~> 4.0.2'
