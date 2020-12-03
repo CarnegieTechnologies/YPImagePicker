@@ -43,5 +43,6 @@ class YPAlbumCell: UITableViewCell {
         
         title.font = YPConfig.fonts.albumCellTitleFont
         numberOfItems.font = YPConfig.fonts.albumCellNumberOfItemsFont
+        backgroundColor = YPConfig.colors.libraryScreenBackgroundColor
     }
 }
