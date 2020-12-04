@@ -32,6 +32,16 @@ open class YPImagePicker: UINavigationController {
         return YPImagePickerConfiguration.shared.preferredStatusBarStyle
     }
     
+    open override var childForStatusBarHidden: UIViewController? {
+        if let topController = children.last as? YPPickerVC {
+            return topController.controllers[topController.currentPage]
+        } else if children.last is CropViewController {
+            return children.first
+        } else {
+            return children.last
+        }
+    }
+    
     // This nifty little trick enables us to call the single version of the callbacks.
     // This keeps the backwards compatibility keeps the api as simple as possible.
     // Multiple selection becomes available as an opt-in.
