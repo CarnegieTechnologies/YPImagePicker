@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'CTYPImagePicker'
-  s.version          = "4.5.1"
+  s.version          = "4.6.0"
   s.summary          = "Instagram-like image picker & filters for iOS"
   s.homepage         = "https://github.com/CarnegieTechnologies/YPImagePicker"
   s.license          = { :type => "MIT", :file => "LICENSE" }
