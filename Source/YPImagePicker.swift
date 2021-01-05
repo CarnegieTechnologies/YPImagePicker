@@ -9,6 +9,7 @@
 import UIKit
 import AVFoundation
 import Photos
+import Mantis
 
 public protocol YPImagePickerDelegate: AnyObject {
     func noPhotos()
@@ -31,6 +32,16 @@ open class YPImagePicker: UINavigationController {
         return YPImagePickerConfiguration.shared.preferredStatusBarStyle
     }
     
+    open override var childForStatusBarHidden: UIViewController? {
+        if let topController = children.last as? YPPickerVC {
+            return topController.controllers[topController.currentPage]
+        } else if children.last is CropViewController {
+            return children.first
+        } else {
+            return children.last
+        }
+    }
+    
     // This nifty little trick enables us to call the single version of the callbacks.
     // This keeps the backwards compatibility keeps the api as simple as possible.
     // Multiple selection becomes available as an opt-in.
@@ -40,6 +51,7 @@ open class YPImagePicker: UINavigationController {
     
     let loadingView = YPLoadingView()
     private let picker: YPPickerVC!
+    var currentlyModifiedPhoto: YPMediaPhoto?
     
     /// Get a YPImagePicker instance with the default configuration.
     public convenience init() {
@@ -74,23 +86,24 @@ override open func viewDidLoad() {
         setNeedsStatusBarAppearanceUpdate()
 
         picker.didSelectItems = { [weak self] items in
+            guard let self = self else { return }
             // Use Fade transition instead of default push animation
             let transition = CATransition()
             transition.duration = 0.3
             transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
             transition.type = CATransitionType.fade
-            self?.view.layer.add(transition, forKey: nil)
+            self.view.layer.add(transition, forKey: nil)
             
             // Multiple items flow
             if items.count > 1 {
                 if YPConfig.library.skipSelectionsGallery {
-                    self?.didSelect(items: items)
+                    self.didSelect(items: items)
                     return
                 } else {
                     let selectionsGalleryVC = YPSelectionsGalleryVC(items: items) { _, items in
-                        self?.didSelect(items: items)
+                        self.didSelect(items: items)
                     }
-                    self?.pushViewController(selectionsGalleryVC, animated: true)
+                    self.pushViewController(selectionsGalleryVC, animated: true)
                     return
                 }
             }
@@ -99,28 +112,13 @@ override open func viewDidLoad() {
             let item = items.first!
             switch item {
             case .photo(let photo):
-                let completion = { (photo: YPMediaPhoto) in
-                    let mediaItem = YPMediaItem.photo(p: photo)
-                    // Save new image or existing but modified, to the photo album.
-                    if YPConfig.shouldSaveNewPicturesToAlbum {
-                        let isModified = photo.modifiedImage != nil
-                        if photo.fromCamera || (!photo.fromCamera && isModified) {
-                            YPPhotoSaver.trySaveImage(photo.image, inAlbumNamed: YPConfig.albumName)
-                        }
-                    }
-                    self?.didSelect(items: [mediaItem])
-                }
-                
-                func showCropVC(photo: YPMediaPhoto, completion: @escaping (_ aphoto: YPMediaPhoto) -> Void) {
+                self.currentlyModifiedPhoto = photo
+                func showCropVC(photo: YPMediaPhoto) {
                     if case let YPCropType.rectangle(ratios) = YPConfig.showsCrop {
-                        let cropVC = YPCropVC(image: photo.image, ratios: ratios)
-                        cropVC.didFinishCropping = { croppedImage in
-                            photo.modifiedImage = croppedImage
-                            completion(photo)
-                        }
-                        self?.pushViewController(cropVC, animated: true)
+                        let cropVC = self.cropViewController(for: photo.image, with: ratios)
+                        self.pushViewController(cropVC, animated: true)
                     } else {
-                        completion(photo)
+                        self.save(photo: photo)
                     }
                 }
                 
@@ -130,12 +128,12 @@ override open func viewDidLoad() {
                     // Show filters and then crop
                     filterVC.didSave = { outputMedia in
                         if case let YPMediaItem.photo(outputPhoto) = outputMedia {
-                            showCropVC(photo: outputPhoto, completion: completion)
+                            showCropVC(photo: outputPhoto)
                         }
                     }
-                    self?.pushViewController(filterVC, animated: false)
+                    self.pushViewController(filterVC, animated: false)
                 } else {
-                    showCropVC(photo: photo, completion: completion)
+                    showCropVC(photo: photo)
                 }
             case .video(let video):
                 if YPConfig.showsVideoTrimmer {
@@ -144,9 +142,9 @@ override open func viewDidLoad() {
                     videoFiltersVC.didSave = { [weak self] outputMedia in
                         self?.didSelect(items: [outputMedia])
                     }
-                    self?.pushViewController(videoFiltersVC, animated: true)
+                    self.pushViewController(videoFiltersVC, animated: true)
                 } else {
-                    self?.didSelect(items: [YPMediaItem.video(v: video)])
+                    self.didSelect(items: [YPMediaItem.video(v: video)])
                 }
             }
         }
@@ -163,6 +161,33 @@ override open func viewDidLoad() {
         loadingView.fillContainer()
         loadingView.alpha = 0
     }
+    
+    private func cropViewController(for image: UIImage, with ratios: [MantisRatio]) -> CropViewController {
+        var config = Mantis.Config()
+        config.ratioOptions = [.custom]
+        ratios.forEach { (ratio) in
+            config.addCustomRatio(byVerticalWidth: ratio.width, andVerticalHeight: ratio.height)
+        }
+        config.cropToolbarConfig.toolbarButtonOptions = .all
+        config.cropToolbarConfig.optionButtonFontSize = 16
+        config.cropToolbarConfig.cropToolbarHeightForVertialOrientation = 56
+        let cropViewController = Mantis.cropViewController(image: image, config: config)
+        cropViewController.delegate = self
+        cropViewController.title = YPConfig.wordings.crop
+        return cropViewController
+    }
+    
+    private func save(photo: YPMediaPhoto) {
+        let mediaItem = YPMediaItem.photo(p: photo)
+        // Save new image or existing but modified, to the photo album.
+        if YPConfig.shouldSaveNewPicturesToAlbum {
+            let isModified = photo.modifiedImage != nil
+            if photo.fromCamera || (!photo.fromCamera && isModified) {
+                YPPhotoSaver.trySaveImage(photo.image, inAlbumNamed: YPConfig.albumName)
+            }
+        }
+        didSelect(items: [mediaItem])
+    }
 }
 
 extension YPImagePicker: ImagePickerDelegate {
@@ -174,5 +199,19 @@ extension YPImagePicker: ImagePickerDelegate {
     func shouldAddToSelection(indexPath: IndexPath, numSelections: Int) -> Bool {
         return self.imagePickerDelegate?.shouldAddToSelection(indexPath: indexPath, numSelections: numSelections)
 			?? true
+    }
+}
+
+extension YPImagePicker: CropViewControllerDelegate {
+    public func cropViewControllerDidCrop(_ cropViewController: CropViewController,
+                                          cropped: UIImage, transformation: Transformation) {
+        guard let modifiedPhoto = currentlyModifiedPhoto else { return }
+        modifiedPhoto.modifiedImage = cropped
+        save(photo: modifiedPhoto)
+    }
+    
+    public func cropViewControllerDidCancel(_ cropViewController: CropViewController,
+                                            original: UIImage) {
+        self.popViewController(animated: false)
     }
 }

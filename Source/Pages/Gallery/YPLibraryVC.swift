@@ -21,6 +21,8 @@ public class YPLibraryVC: UIViewController, YPPermissionCheckable {
     internal let mediaManager = LibraryMediaManager()
     internal var latestImageTapped = ""
     internal let panGestureHelper = PanGestureHelper()
+    
+    override open var prefersStatusBarHidden: Bool { YPConfig.hidesStatusBar }
 
     // MARK: - Init
     

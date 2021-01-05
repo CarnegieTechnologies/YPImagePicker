@@ -18,12 +18,10 @@ protocol ImagePickerDelegate: AnyObject {
 open class YPPickerVC: YPBottomPager, YPBottomPagerDelegate {
     
     let albumsManager = YPAlbumsManager()
-    var shouldHideStatusBar = false
-    var initialStatusBarHidden = false
     weak var imagePickerDelegate: ImagePickerDelegate?
     
     override open var prefersStatusBarHidden: Bool {
-        return (shouldHideStatusBar || initialStatusBarHidden) && YPConfig.hidesStatusBar
+        return YPConfig.hidesStatusBar
     }
     
     /// Private callbacks to YPImagePicker
@@ -132,8 +130,6 @@ open class YPPickerVC: YPBottomPager, YPBottomPagerDelegate {
     
     open override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        shouldHideStatusBar = true
-        initialStatusBarHidden = true
         UIView.animate(withDuration: 0.3) {
             self.setNeedsStatusBarAppearanceUpdate()
         }
@@ -189,7 +185,6 @@ open class YPPickerVC: YPBottomPager, YPBottomPagerDelegate {
     
     open override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        shouldHideStatusBar = false
         stopAll()
     }
     

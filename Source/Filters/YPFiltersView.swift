@@ -34,7 +34,7 @@ class YPFiltersView: UIView {
         let isIphone4 = UIScreen.main.bounds.height == 480
         let sideMargin: CGFloat = isIphone4 ? 20 : 0
         
-        |-sideMargin-imageView.top(0)-sideMargin-|
+        |-sideMargin-imageView.top(10)-sideMargin-|
         |-sideMargin-collectionViewContainer-sideMargin-|
         collectionViewContainer.bottom(0)
         imageView.Bottom == collectionViewContainer.Top

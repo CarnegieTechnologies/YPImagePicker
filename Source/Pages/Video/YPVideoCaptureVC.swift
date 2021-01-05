@@ -16,13 +16,15 @@ public class YPVideoCaptureVC: UIViewController, YPPermissionCheckable {
     private let v = YPCameraView(overlayView: nil)
     private var viewState = ViewState()
     
+    override open var prefersStatusBarHidden: Bool { true }
+    
     // MARK: - Init
     
     public required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
     
     public required init() {
         super.init(nibName: nil, bundle: nil)
-        title = YPConfig.wordings.videoTitle
+//        title = YPConfig.wordings.videoTitle
         videoHelper.didCaptureVideo = { [weak self] videoURL in
             self?.didCaptureVideo?(videoURL)
             self?.resetVisualState()
@@ -52,6 +54,27 @@ public class YPVideoCaptureVC: UIViewController, YPPermissionCheckable {
         // Zoom
         let pinchRecongizer = UIPinchGestureRecognizer(target: self, action: #selector(self.pinch(_:)))
         v.previewViewContainer.addGestureRecognizer(pinchRecongizer)
+    }
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setUpNavigationBar()
+        UIView.animate(withDuration: 0.3) {
+            self.setNeedsStatusBarAppearanceUpdate()
+        }
+    }
+    
+    public override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationController?.navigationBar.backgroundColor = YPConfig.colors.tintColor
+        navigationController?.navigationBar.isTranslucent = false
+    }
+    
+    private func setUpNavigationBar() {
+        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navigationController?.navigationBar.shadowImage = UIImage()
+        navigationController?.navigationBar.isTranslucent = true
+        navigationController?.navigationBar.backgroundColor = .clear
     }
 
     func start() {

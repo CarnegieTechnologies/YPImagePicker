@@ -20,6 +20,8 @@ public class YPVideoFiltersVC: UIViewController, IsMediaFilterVC {
     
     @IBOutlet weak var coverImageView: UIImageView!
     @IBOutlet weak var coverThumbSelectorView: ThumbSelectorView!
+    
+    override open var prefersStatusBarHidden: Bool { return YPConfig.hidesStatusBar }
 
     public var inputVideo: YPMediaVideo!
     public var inputAsset: AVAsset { return AVAsset(url: inputVideo.url) }

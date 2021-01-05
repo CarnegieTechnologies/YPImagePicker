@@ -17,12 +17,15 @@ public class YPCameraVC: UIViewController, UIGestureRecognizerDelegate, YPPermis
     let v: YPCameraView!
     var isInited = false
     var videoZoomFactor: CGFloat = 1.0
+    
+    override open var prefersStatusBarHidden: Bool { true }
+    
     override public func loadView() { view = v }
 
     public required init() {
         self.v = YPCameraView(overlayView: YPConfig.overlayView)
         super.init(nibName: nil, bundle: nil)
-        title = YPConfig.wordings.cameraTitle
+//        title = YPConfig.wordings.cameraTitle
         navigationController?.navigationBar.setTitleFont(font: YPConfig.fonts.navigationBarTitleFont)
         
         YPDeviceOrientationHelper.shared.startDeviceOrientationNotifier { _ in }
@@ -52,6 +55,27 @@ public class YPCameraVC: UIViewController, UIGestureRecognizerDelegate, YPPermis
         let pinchRecongizer = UIPinchGestureRecognizer(target: self, action: #selector(self.pinch(_:)))
         pinchRecongizer.delegate = self
         v.previewViewContainer.addGestureRecognizer(pinchRecongizer)
+    }
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setUpNavigationBar()
+        UIView.animate(withDuration: 0.3) {
+            self.setNeedsStatusBarAppearanceUpdate()
+        }
+    }
+    
+    public override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationController?.navigationBar.backgroundColor = YPConfig.colors.tintColor
+        navigationController?.navigationBar.isTranslucent = false
+    }
+    
+    private func setUpNavigationBar() {
+        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navigationController?.navigationBar.shadowImage = UIImage()
+        navigationController?.navigationBar.isTranslucent = true
+        navigationController?.navigationBar.backgroundColor = .clear
     }
     
     func start() {

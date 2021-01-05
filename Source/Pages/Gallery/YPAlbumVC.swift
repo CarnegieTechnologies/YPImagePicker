@@ -69,6 +69,7 @@ class YPAlbumVC: UIViewController {
         v.tableView.estimatedRowHeight = 80
         v.tableView.separatorStyle = .none
         v.tableView.register(YPAlbumCell.self, forCellReuseIdentifier: "AlbumCell")
+        v.tableView.backgroundColor = YPConfig.colors.libraryScreenBackgroundColor
     }
 }
 

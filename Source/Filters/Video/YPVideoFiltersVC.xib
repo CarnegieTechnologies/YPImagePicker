@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17125"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="YPVideoFiltersVC" customModule="YPImagePicker" customModuleProvider="target">
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="YPVideoFiltersVC" customModule="CTYPImagePicker" customModuleProvider="target">
             <connections>
                 <outlet property="coverBottomItem" destination="qy9-MY-67C" id="LaY-F2-uVO"/>
                 <outlet property="coverImageView" destination="daH-No-sZc" id="sNy-7V-7gV"/>
@@ -24,34 +24,34 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qy9-MY-67C" customClass="YPMenuItem" customModule="YPImagePicker" customModuleProvider="target">
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qy9-MY-67C" customClass="YPMenuItem" customModule="CTYPImagePicker" customModuleProvider="target">
                     <rect key="frame" x="187.5" y="627" width="187.5" height="40"/>
                     <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="40" id="Ik5-9V-0hz"/>
                     </constraints>
                 </view>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uB8-a7-Vh0" customClass="YPMenuItem" customModule="YPImagePicker" customModuleProvider="target">
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uB8-a7-Vh0" customClass="YPMenuItem" customModule="CTYPImagePicker" customModuleProvider="target">
                     <rect key="frame" x="0.0" y="627" width="187.5" height="40"/>
                     <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                 </view>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="AFl-Bk-oPH" customClass="YPVideoView" customModule="YPImagePicker" customModuleProvider="target">
-                    <rect key="frame" x="0.0" y="0.0" width="375" height="375"/>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="AFl-Bk-oPH" customClass="YPVideoView" customModule="CTYPImagePicker" customModuleProvider="target">
+                    <rect key="frame" x="0.0" y="10" width="375" height="375"/>
                     <constraints>
                         <constraint firstAttribute="width" secondItem="AFl-Bk-oPH" secondAttribute="height" multiplier="1:1" id="tL6-cM-ei5"/>
                     </constraints>
                 </view>
                 <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="daH-No-sZc">
-                    <rect key="frame" x="0.0" y="0.0" width="375" height="375"/>
+                    <rect key="frame" x="0.0" y="10" width="375" height="375"/>
                 </imageView>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dMy-Fy-gyR">
-                    <rect key="frame" x="0.0" y="375" width="375" height="252"/>
+                    <rect key="frame" x="0.0" y="385" width="375" height="242"/>
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="W4N-1E-jNP" customClass="TrimmerView" customModule="PryntTrimmerView">
-                            <rect key="frame" x="30" y="84" width="315" height="84"/>
+                            <rect key="frame" x="30" y="80.5" width="315" height="81"/>
                         </view>
                         <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Tqq-Gf-aeR" customClass="ThumbSelectorView" customModule="PryntTrimmerView">
-                            <rect key="frame" x="30" y="84" width="315" height="84"/>
+                            <rect key="frame" x="30" y="80.5" width="315" height="81"/>
                         </view>
                     </subviews>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -67,6 +67,7 @@
                     </constraints>
                 </view>
             </subviews>
+            <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="uB8-a7-Vh0" firstAttribute="bottom" secondItem="fnl-2z-Ty3" secondAttribute="bottom" id="CC1-rc-s2V"/>
@@ -78,7 +79,7 @@
                 <constraint firstItem="daH-No-sZc" firstAttribute="bottom" secondItem="AFl-Bk-oPH" secondAttribute="bottom" id="MaG-K6-Aq8"/>
                 <constraint firstItem="qy9-MY-67C" firstAttribute="top" secondItem="dMy-Fy-gyR" secondAttribute="bottom" id="Qlv-q8-8Hh"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="qy9-MY-67C" secondAttribute="trailing" id="RdA-eh-2U7"/>
-                <constraint firstItem="AFl-Bk-oPH" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="SaE-kX-wSu"/>
+                <constraint firstItem="AFl-Bk-oPH" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="10" id="SaE-kX-wSu"/>
                 <constraint firstItem="uB8-a7-Vh0" firstAttribute="height" secondItem="qy9-MY-67C" secondAttribute="height" id="dil-cq-CMa"/>
                 <constraint firstItem="dMy-Fy-gyR" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="ecA-Oe-ps4"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="dMy-Fy-gyR" secondAttribute="trailing" id="hyI-iq-qoa"/>
@@ -88,7 +89,6 @@
                 <constraint firstItem="uB8-a7-Vh0" firstAttribute="width" secondItem="qy9-MY-67C" secondAttribute="width" id="qhk-iL-B9n"/>
                 <constraint firstItem="dMy-Fy-gyR" firstAttribute="top" secondItem="AFl-Bk-oPH" secondAttribute="bottom" id="zco-k3-gb7"/>
             </constraints>
-            <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <point key="canvasLocation" x="32.5" y="105.5"/>
         </view>
     </objects>

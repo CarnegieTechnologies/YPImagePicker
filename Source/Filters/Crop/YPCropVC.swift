@@ -10,9 +10,10 @@ import UIKit
 
 public enum YPCropType {
     case none
-    case rectangle(ratios: [Ratio])
+    case rectangle(ratios: [MantisRatio])
 }
 
+// To be used for YPCropper
 public enum Ratio: String {
     case oneToOne = "1:1"
     case fourToThree = "4:3"
@@ -26,6 +27,19 @@ public enum Ratio: String {
         case .threeToFour: return 3.0 / 4.0
         case .sixteenToNine: return 16.0 / 9.0
         }
+    }
+}
+
+// To be used for Mantis cropper
+public struct MantisRatio {
+    let width: Int
+    let height: Int
+    
+    public init?(ratioStringValue: String) {
+        guard let width = Int(ratioStringValue.split(separator: ":").first ?? "1"),
+              let height = Int(ratioStringValue.split(separator: ":").last ?? "1") else { return nil }
+        self.width = width
+        self.height = height
     }
 }
 
