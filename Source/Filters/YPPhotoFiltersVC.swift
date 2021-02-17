@@ -15,15 +15,17 @@ protocol IsMediaFilterVC: class {
 
 open class YPPhotoFiltersVC: UIViewController, IsMediaFilterVC, UIGestureRecognizerDelegate {
     
-    required public init(inputPhoto: YPMediaPhoto, isFromSelectionVC: Bool) {
+    required public init(inputPhoto: YPMediaPhoto, isFromSelectionVC: Bool, isLastStep: Bool = false) {
         super.init(nibName: nil, bundle: nil)
         
         self.inputPhoto = inputPhoto
         self.isFromSelectionVC = isFromSelectionVC
+        self.isLastStep = isLastStep
     }
     
     public var inputPhoto: YPMediaPhoto!
     public var isFromSelectionVC = false
+    public var isLastStep = false
 
     public var didSave: ((YPMediaItem) -> Void)?
     public var didCancel: (() -> Void)?
@@ -102,7 +104,7 @@ open class YPPhotoFiltersVC: UIViewController, IsMediaFilterVC, UIGestureRecogni
     // MARK: Setup - ⚙️
     
     fileprivate func setupRightBarButton() {
-        let rightBarButtonTitle = isFromSelectionVC ? YPConfig.wordings.done : YPConfig.wordings.next
+        let rightBarButtonTitle = isFromSelectionVC || isLastStep ? YPConfig.wordings.done : YPConfig.wordings.next
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: rightBarButtonTitle,
                                                             style: .done,
                                                             target: self,

@@ -29,16 +29,19 @@ public class YPVideoFiltersVC: UIViewController, IsMediaFilterVC {
     private var playbackTimeCheckerTimer: Timer?
     private var imageGenerator: AVAssetImageGenerator?
     private var isFromSelectionVC = false
+    private var isLastStep = false
     
     var didSave: ((YPMediaItem) -> Void)?
     var didCancel: (() -> Void)?
 
     /// Designated initializer
     public class func initWith(video: YPMediaVideo,
-                               isFromSelectionVC: Bool) -> YPVideoFiltersVC {
+                               isFromSelectionVC: Bool,
+                               isLastStep: Bool = false) -> YPVideoFiltersVC {
         let vc = YPVideoFiltersVC(nibName: "YPVideoFiltersVC", bundle: Bundle(for: YPVideoFiltersVC.self))
         vc.inputVideo = video
         vc.isFromSelectionVC = isFromSelectionVC
+        vc.isLastStep = isLastStep
         
         return vc
     }
@@ -108,7 +111,7 @@ public class YPVideoFiltersVC: UIViewController, IsMediaFilterVC {
     }
     
     func setupRightBarButtonItem() {
-        let rightBarButtonTitle = isFromSelectionVC ? YPConfig.wordings.done : YPConfig.wordings.next
+        let rightBarButtonTitle = isFromSelectionVC || isLastStep ? YPConfig.wordings.done : YPConfig.wordings.next
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: rightBarButtonTitle,
                                                             style: .done,
                                                             target: self,
