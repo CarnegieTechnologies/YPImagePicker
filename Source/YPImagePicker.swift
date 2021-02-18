@@ -171,8 +171,9 @@ override open func viewDidLoad() {
     private func cropViewController(for image: UIImage, with ratios: [MantisRatio]) -> CropViewController {
         var config = Mantis.Config()
         config.ratioOptions = [.custom]
+        config.cropToolbarConfig.ratioCandidatesShowType = .alwaysShowRatioList
         ratios.forEach { (ratio) in
-            config.addCustomRatio(byVerticalWidth: ratio.width, andVerticalHeight: ratio.height)
+            config.addCustomRatio(byHorizontalWidth: ratio.width, andHorizontalHeight: ratio.height)
         }
         if ratios.first(where: {$0.height == 1 && $0.width == 1}) != nil {
             config.presetFixedRatioType = .canUseMultiplePresetFixedRatio(defaultRatio: 1)
@@ -183,9 +184,9 @@ override open func viewDidLoad() {
             config.presetFixedRatioType = .canUseMultiplePresetFixedRatio(defaultRatio: width / height)
         }
         if YPConfig.enableCropRotation {
-            config.cropToolbarConfig.toolbarButtonOptions = [.clockwiseRotate, .counterclockwiseRotate, .ratio]
+            config.cropToolbarConfig.toolbarButtonOptions = [.clockwiseRotate, .counterclockwiseRotate]
         } else {
-            config.cropToolbarConfig.toolbarButtonOptions = [.ratio]
+            config.cropToolbarConfig.toolbarButtonOptions = []
             config.showRotationDial = false
         }
         config.cropToolbarConfig.optionButtonFontSize = 16
