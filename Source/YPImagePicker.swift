@@ -123,8 +123,13 @@ override open func viewDidLoad() {
                 }
                 
                 if YPConfig.showsPhotoFilters {
+                    var isLastStep = false
+                    if case YPCropType.none = YPConfig.showsCrop {
+                        isLastStep = true
+                    }
                     let filterVC = YPPhotoFiltersVC(inputPhoto: photo,
-                                                    isFromSelectionVC: false)
+                                                    isFromSelectionVC: false,
+                                                    isLastStep: isLastStep)
                     // Show filters and then crop
                     filterVC.didSave = { outputMedia in
                         if case let YPMediaItem.photo(outputPhoto) = outputMedia {
@@ -138,7 +143,8 @@ override open func viewDidLoad() {
             case .video(let video):
                 if YPConfig.showsVideoTrimmer {
                     let videoFiltersVC = YPVideoFiltersVC.initWith(video: video,
-                                                                   isFromSelectionVC: false)
+                                                                   isFromSelectionVC: false,
+                                                                   isLastStep: true)
                     videoFiltersVC.didSave = { [weak self] outputMedia in
                         self?.didSelect(items: [outputMedia])
                     }
@@ -165,10 +171,24 @@ override open func viewDidLoad() {
     private func cropViewController(for image: UIImage, with ratios: [MantisRatio]) -> CropViewController {
         var config = Mantis.Config()
         config.ratioOptions = [.custom]
+        config.cropToolbarConfig.ratioCandidatesShowType = .alwaysShowRatioList
         ratios.forEach { (ratio) in
-            config.addCustomRatio(byVerticalWidth: ratio.width, andVerticalHeight: ratio.height)
+            config.addCustomRatio(byHorizontalWidth: ratio.width, andHorizontalHeight: ratio.height)
         }
-        config.cropToolbarConfig.toolbarButtonOptions = .all
+        if ratios.first(where: {$0.height == 1 && $0.width == 1}) != nil {
+            config.presetFixedRatioType = .canUseMultiplePresetFixedRatio(defaultRatio: 1)
+        } else {
+            let ratio = ratios.first
+            let width = Double(ratio?.width ?? 1)
+            let height = Double(ratio?.height ?? 1)
+            config.presetFixedRatioType = .canUseMultiplePresetFixedRatio(defaultRatio: width / height)
+        }
+        if YPConfig.enableCropRotation {
+            config.cropToolbarConfig.toolbarButtonOptions = [.clockwiseRotate, .counterclockwiseRotate]
+        } else {
+            config.cropToolbarConfig.toolbarButtonOptions = []
+            config.showRotationDial = false
+        }
         config.cropToolbarConfig.optionButtonFontSize = 16
         config.cropToolbarConfig.cropToolbarHeightForVertialOrientation = 56
         let cropViewController = Mantis.cropViewController(image: image, config: config)

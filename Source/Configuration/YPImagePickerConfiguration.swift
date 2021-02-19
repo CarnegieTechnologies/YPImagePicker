@@ -84,6 +84,9 @@ public struct YPImagePickerConfiguration {
     /// Adds a Crop step in the photo taking process, after filters.  Defaults to .none
     public var showsCrop: YPCropType = .none
     
+    /// Adds a rotation feature to Mantis cropper
+    public var enableCropRotation = true
+    
     /// Ex: cappedTo:1024 will make sure images from the library or the camera will be
     /// resized to fit in a 1024x1024 box. Defaults to original image size.
     public var targetImageSize = YPImageSize.original
