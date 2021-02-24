@@ -171,9 +171,10 @@ override open func viewDidLoad() {
     private func cropViewController(for image: UIImage, with ratios: [MantisRatio]) -> CropViewController {
         var config = Mantis.Config()
         config.ratioOptions = [.custom]
+        config.cropToolbarConfig.fixRatiosShowType = .vetical
         config.cropToolbarConfig.ratioCandidatesShowType = .alwaysShowRatioList
         ratios.forEach { (ratio) in
-            config.addCustomRatio(byHorizontalWidth: ratio.width, andHorizontalHeight: ratio.height)
+            config.addCustomRatio(byVerticalWidth: ratio.width, andVerticalHeight: ratio.height)
         }
         if ratios.first(where: {$0.height == 1 && $0.width == 1}) != nil {
             config.presetFixedRatioType = .canUseMultiplePresetFixedRatio(defaultRatio: 1)

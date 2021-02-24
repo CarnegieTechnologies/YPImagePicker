@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'CTYPImagePicker'
-  s.version          = "4.6.1"
+  s.version          = "4.6.3"
   s.summary          = "Instagram-like image picker & filters for iOS"
   s.homepage         = "https://github.com/CarnegieTechnologies/YPImagePicker"
   s.license          = { :type => "MIT", :file => "LICENSE" }
@@ -14,7 +14,7 @@ Pod::Spec.new do |s|
   s.source_files = 'Source/**/*.swift'
   s.dependency 'SteviaLayout', '~> 4.7.3'
   s.dependency 'PryntTrimmerView', '~> 4.0.2'
-  s.dependency 'Mantis', '~> 1.4.10'
+  s.dependency 'Mantis', '~> 1.4.12'
   s.resources    = ['Resources/*', 'Source/**/*.xib']
   s.description  = "Instagram-like image picker & filters for iOS supporting videos and albums"
   s.swift_versions = ['3', '4.1', '4.2', '5.0', '5.1', '5.2', '5.3']
